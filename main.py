@@ -1,6 +1,6 @@
 from od2estminer import *
 
-a = od2estminer('orderedhjj.txt',3)
+a = od2estminer('orderedhjj.txt',4)
 a.mine()
 
 out = open('orderedhjj_out.txt','w')

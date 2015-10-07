@@ -58,16 +58,16 @@ class od2estminer(object):
 					print '	Set trees costs %f seconds' %(self.time_settree[k])
 					print '	Mine costs %f seconds' %(self.time_mine[k])
 					k += 1
-					#if k == 15:
-						#break
+					if k == 6:
+						break
 
 	def mineFreqLabels(self):
 		splitters = '[(,;)]'
-		for atree in self.ats.trees:
+		for (ind, atree) in enumerate(self.ats.trees):
 			labels = re.split(splitters, atree)			
 			labels = filter(lambda l: l != '', labels)		# filter ''
 			labels = list(set(labels))			# remove the same label
-			map(self.findALabel, labels, [self.ats.trees.index(atree)] * len(labels))
+			map(self.findALabel, labels, [ind] * len(labels))
 		self.freqSubTrees = filter(lambda f: len(f['plist']) >= self.threshold, self.freqSubTrees)
 
 
@@ -94,14 +94,14 @@ class od2estminer(object):
 		startTime = time.time()
 		fk = filter(lambda f : f['number'] == k-1, self.freqSubTrees)
 		print 'The number of %d trees: %d' %(k, len(fk))
-		for thisTree in fk:
-			for anotherTree in fk:
+		for (thisInd, thisTree) in enumerate(fk):
+			for (anotherInd, anotherTree) in enumerate(fk):
 				if thisTree['prefix'] == anotherTree['prefix']:
 					if self.isSameTopology(thisTree['lastLabel'], anotherTree['lastLabel'], thisTree['ptree'], anotherTree['ptree']):
 						self.join(thisTree, anotherTree, k)
 						self.attachleg(thisTree, anotherTree, k)
 					else:
-						if self.freqSubTrees.index(thisTree) > self.freqSubTrees.index(anotherTree):
+						if thisInd > anotherInd:
 							self.join(thisTree, anotherTree, k)
 							
 		endTime = time.time()
