@@ -41,6 +41,7 @@ class od2estminer(object):
 			print 'Mine 2 Frequent Trees costs %f seconds' %(endTime - startTime)
 			
 			self.time_freqTest = numpy.zeros([20])
+			self.time_freqTest100 = numpy.zeros([20])
 			self.time_join = numpy.zeros([20])
 			self.time_attachleg = numpy.zeros([20])
 			self.time_settree = numpy.zeros([20])
@@ -53,12 +54,13 @@ class od2estminer(object):
 					endTime = time.time()
 					print 'Mine %d Frequent Trees costs %f seconds' %(k, endTime - startTime)
 					print '	Freqeuency Test costs %f seconds' %(self.time_freqTest[k])
-					print '	Join costs %f seconds' %(self.time_join[k])
-					print '	Attach leg costs %f seconds' %(self.time_attachleg[k])
-					print '	Set trees costs %f seconds' %(self.time_settree[k])
-					print '	Mine costs %f seconds' %(self.time_mine[k])
+					#print '	Freqeuency Test100 costs %f seconds' %(self.time_freqTest100[k])
+					#print '	Join costs %f seconds' %(self.time_join[k])
+					#print '	Attach leg costs %f seconds' %(self.time_attachleg[k])
+					#print '	Set trees costs %f seconds' %(self.time_settree[k])
+					#print '	Mine costs %f seconds' %(self.time_mine[k])
 					k += 1
-					if k == 6:
+					if k == 20:
 						break
 
 	def mineFreqLabels(self):
@@ -118,18 +120,16 @@ class od2estminer(object):
 		startTime = time.time()
 		candidate = tree()
 		candidate.settree(expandedStr)
-		endTime = time.time()
-		self.time_settree[kTree] += endTime - startTime
 
 		intersect = list(set(thisTree['plist']).intersection(set(anotherTree['plist'])))
 		support = []
-		startTime = time.time()
 		for k in intersect:
 			if candidate.isembedded(self.ats.ptrees[k].postTree):
 				support.append(k)
 		endTime = time.time()
 		self.time_freqTest[kTree] += endTime - startTime
-		
+
+		startTime = time.time()
 		if len(support) >= self.threshold:
 			position = expandedStr.rfind(lastLabel)			
 			if expandedStr[position-1] == ',':
@@ -138,6 +138,8 @@ class od2estminer(object):
 				prefix = expandedStr[:position-1] + expandedStr[(position + len(lastLabel) + 1):]
 			self.freqSubTrees.append({'number': kTree, 'ptree': expandedStr, 'plist': support, 'lastLabel': lastLabel, 'prefix': prefix})
 		
+		endTime = time.time()
+		self.time_freqTest100[kTree] += endTime - startTime
 		
 
 	def attachleg(self, thisTree, anotherTree, kTree):

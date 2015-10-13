@@ -114,12 +114,15 @@ class tree(object):
 		else:
 			return True
 
-	def pcpairdetection(self, parent, child):
+
+
+	def pcpairdetection(self, par, child):
 		ischild = filter(lambda n: n.label == child, self.postTree)
 		for eachchild in ischild:
-			p = eachchild
-			while (p != self.root and p.label != parent):
+			p = eachchild.parent
+			while (p != None and p.label != par):
 				p = p.parent
-			if p.label == parent:
+			if (p != None and p.label == par):
 				return True
 		return False
+
